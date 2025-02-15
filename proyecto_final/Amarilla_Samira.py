@@ -38,18 +38,21 @@ class Pelicula:
         self.director = director
         self._codigo = codigo
 
+    def __str__(self):
+        return f"{self.nombre} ({self.anio}) - Dirigida por {self.director}, Código: {self._codigo}"
 
-class CatalogoPelicula(Pelicula):
-    def __init__(self, nombre, anio, director, codigo, ruta_archivo):
-        super().__init__(nombre, anio, director, codigo)
+class CatalogoPelicula:
+    def __init__(self, ruta_archivo):
         self.ruta_archivo = ruta_archivo
 
-    def agregar(self):
+    def agregar(self, pelicula):
+
         with open(self.ruta_archivo, 'a', encoding='utf-8') as archivo:
-            archivo.write(f"{self.nombre},{self.anio},{self.director},{self._codigo}\n")
+            archivo.write(f"{pelicula.nombre},{pelicula.anio},{pelicula.director},{pelicula._codigo}\n")
         print("Película agregada correctamente.")
 
     def listar(self):
+
         if not os.path.exists(self.ruta_archivo):
             print("No hay películas en el catálogo.")
             return
@@ -65,15 +68,15 @@ class CatalogoPelicula(Pelicula):
                 print(pelicula.strip())
 
     def eliminar(self):
+
         if os.path.exists(self.ruta_archivo):
             os.remove(self.ruta_archivo)
             print("Catálogo eliminado correctamente.")
         else:
             print("El catálogo no existe.")
 
-
 def opciones():
-    """Muestra el menú y gestiona las opciones del usuario."""
+
     ruta_archivo = "catalogo.txt"
     catalogo = CatalogoPelicula(ruta_archivo)
 
@@ -81,7 +84,7 @@ def opciones():
         print("\n--- Catálogo de Películas ---")
         print("1. Agregar Película")
         print("2. Listar Películas")
-        print("3. Eliminar catálogo películas")
+        print("3. Eliminar catálogo de películas")
         print("4. Salir")
 
         opcion = input("Seleccione una opción: ")
