@@ -31,28 +31,51 @@ Se solicita:
 """
 import os
 
-ruta_archivo = r'C:\Users\Usuario\Desktop\1_proyecto\proyecto_final\catalogo.txt'
-
 class Pelicula:
-    def __init__(self, nombre, año, director, codigo):
+    def __init__(self, nombre, anio, director, codigo):
         self.nombre = nombre
-        self.año = año
+        self.anio = anio
         self.director = director
         self._codigo = codigo
 
-class CatalogoPelicula (Pelicula):
-    def __init__(self, nombre, ruta_archivo, codigo):
-        super().__init__(nombre)
-        super().__init__(codigo)
+
+class CatalogoPelicula(Pelicula):
+    def __init__(self, nombre, anio, director, codigo, ruta_archivo):
+        super().__init__(nombre, anio, director, codigo)
         self.ruta_archivo = ruta_archivo
 
-    def agregar(self,codigo):
+    def agregar(self):
+        with open(self.ruta_archivo, 'a', encoding='utf-8') as archivo:
+            archivo.write(f"{self.nombre},{self.anio},{self.director},{self._codigo}\n")
+        print("Película agregada correctamente.")
 
+    def listar(self):
+        if not os.path.exists(self.ruta_archivo):
+            print("No hay películas en el catálogo.")
+            return
+        
+        with open(self.ruta_archivo, 'r', encoding='utf-8') as archivo:
+            peliculas = archivo.readlines()
+        
+        if not peliculas:
+            print("El catálogo está vacío.")
+        else:
+            print("\n--- Lista de Películas ---")
+            for pelicula in peliculas:
+                print(pelicula.strip())
+
+    def eliminar(self):
+        if os.path.exists(self.ruta_archivo):
+            os.remove(self.ruta_archivo)
+            print("Catálogo eliminado correctamente.")
+        else:
+            print("El catálogo no existe.")
 
 
 def opciones():
     """Muestra el menú y gestiona las opciones del usuario."""
-    catalogo = "catalogo.csv"
+    ruta_archivo = "catalogo.txt"
+    catalogo = CatalogoPelicula(ruta_archivo)
 
     while True:
         print("\n--- Catálogo de Películas ---")
@@ -64,14 +87,21 @@ def opciones():
         opcion = input("Seleccione una opción: ")
 
         if opcion == "1":
-            agregar(catalogo)
+            nombre = input("Ingrese el nombre de la película: ")
+            anio = input("Ingrese el año de estreno: ")
+            director = input("Ingrese el director de la película: ")
+            codigo = input("Ingrese el código de la película: ")
+            pelicula = Pelicula(nombre, anio, director, codigo)
+            catalogo.agregar(pelicula)
         elif opcion == "2":
-            listar(catalogo)
+            catalogo.listar()
         elif opcion == "3":
-            eliminar(catalogo)
+            catalogo.eliminar()
         elif opcion == "4":
+            print("Saliendo del programa...")
             break
         else:
-            print("Opción no válida. Intente de nuevo.\n")
+            print("Opción no válida. Intente de nuevo.")
+
 if __name__ == "__main__":
     opciones()
